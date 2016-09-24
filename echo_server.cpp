@@ -18,11 +18,11 @@ int main(int argc, char* argv[])
 {
 	int port = (argc>1)?atoi(argv[1]):12345; // server port number
 
-	int server_sock, client_sock;
+	int parent_sock, child_sock;
 	struct sockaddr_in server, client;
 
 	// Create parent socket at the server
-	if( (server_sock = socket(AF_INET, SOCK_STREAM, 0)) == ERROR)
+	if( (parent_sock = socket(AF_INET, SOCK_STREAM, 0)) == ERROR)
 	{
 		perror("Socket error");
 		exit(EXIT_FAILURE);
@@ -36,14 +36,14 @@ int main(int argc, char* argv[])
 
 	// Bind
 	unsigned int len = sizeof(sockaddr_in);
-	if ((bind(server_sock, (struct sockaddr *) &server, len)) ==ERROR )
+	if ((bind(parent_sock, (struct sockaddr *) &server, len)) ==ERROR )
 	{
 		perror("Bind error");
 		exit(EXIT_FAILURE);
 	}
 
 	// Listen
-	if((listen(server_sock, MAX_CLIENTS) == ERROR))
+	if((listen(parent_sock, MAX_CLIENTS) == ERROR))
 	{
 		perror("Listen error");
 		exit(EXIT_FAILURE);
@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 	char msg[] = "Hi client! Welcome to the echo server!"; // client screen message
 	while(1)
 	{
-		if(((client_sock = accept(server_sock, (struct sockaddr *) &client, &len)) == ERROR))
+		if(((child_sock = accept(parent_sock, (struct sockaddr *) &client, &len)) == ERROR))
 		{
 			perror("Accpet error");
 			exit(EXIT_FAILURE);
@@ -65,18 +65,18 @@ int main(int argc, char* argv[])
 		char recv_buffer[MAXBUFFER]; // Buffer to receive the data from client
 		int recv_bytes; // number of received bytes
 
-		while((recv_bytes = recv(client_sock, &recv_buffer, sizeof recv_buffer, 0)))
+		while((recv_bytes = recv(child_sock, &recv_buffer, sizeof recv_buffer, 0)))
 		{
 			recv_buffer[recv_bytes] = '\0'; // To enforce the string termination 
-			cout << "Received: " << recv_buffer;
-			int sent_bytes = send(client_sock, recv_buffer, recv_bytes, 0);
+			cout << "Received: " << recv_buffer << endl;
+			int sent_bytes = send(child_sock, recv_buffer, recv_bytes, 0);
 			// cout << "Sent bytes " << sent_bytes << endl;
 		}
 
 		cout << "Client disconnected" << endl << endl;
-		close(client_sock);
+		close(child_sock);
 	}
 
-	close(server_sock);
+	close(parent_sock);
 	return 0;
 }
