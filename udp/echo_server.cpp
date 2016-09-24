@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
 		cout << "Client with IP address " << inet_ntoa(client.sin_addr) << " and port " << ntohs(client.sin_port) << " connected and sent following " << recv_bytes << " bytes" << endl;
 		recv_buffer[recv_bytes] = '\0'; // To enforce the string termination 
-		cout << recv_buffer << endl;
+		cout << recv_buffer;
 
 		int sent_bytes = sendto(sock, recv_buffer, recv_bytes, 0, (struct sockaddr *) &client, sock_len);
 		if (sent_bytes == ERROR)
