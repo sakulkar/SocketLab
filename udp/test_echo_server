@@ -1,0 +1,5 @@
+#!/bin/bash
+host="127.0.0.1"
+port=12345
+echo "Hi, Server. It's me, the Client." >/dev/udp/$host/$port
+# Change the string above
