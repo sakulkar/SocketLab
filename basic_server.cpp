@@ -14,14 +14,14 @@ using namespace std;
 #define MAXBUFFER 1024
 #define MAX_CLIENTS 5
 
-int main(){
-	int port = 1234;
+int main(int argc, char* argv[])
+{
+	int port = (argc>1)?atoi(argv[1]):12345; // server port number
 
 	int server_sock, client_sock;
 	struct sockaddr_in server, client;
 
-	// message
-	char msg[] = "Hi client! Welcome to my server!";
+
 
 	// Create parent socket at the server
 	if( (server_sock = socket(AF_INET, SOCK_STREAM, 0)) == ERROR)
@@ -51,6 +51,10 @@ int main(){
 		exit(EXIT_FAILURE);
 	}
 
+	cout << "Basic server started on port " << port << endl; // server screen message
+
+	char msg[] = "Hi client! Welcome to the basic server!"; // client screen message
+
 	while(1)
 	{
 		if(((client_sock = accept(server_sock, (struct sockaddr *) &client, &len)) == ERROR))
@@ -59,7 +63,7 @@ int main(){
 			exit(EXIT_FAILURE);
 		}
 
-		cout << "Client with IP address " << inet_ntoa(client.sin_addr) << " and port " << ntohs(client.sin_port) << "connected" << endl;
+		cout << "Client with IP address " << inet_ntoa(client.sin_addr) << " and port " << ntohs(client.sin_port) << " connected" << endl;
 
 		int sent_bytes = send(client_sock, msg, strlen(msg), 0);
 

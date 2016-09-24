@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	cout << "Echo server started" << endl; // server screen message
+	cout << "Echo server started on port " << port << endl; // server screen message
 
 	char msg[] = "Hi client! Welcome to the echo server!"; // client screen message
 	while(1)
